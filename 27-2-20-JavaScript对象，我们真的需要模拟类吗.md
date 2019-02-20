@@ -34,3 +34,157 @@
 
 ## JavaScript 的原型
 
+抛开 JavaScript 用于模拟 Java 类的复杂语法设施（如 new、Funtion Object 等），原型系统可以说相当简单，概括成两条：
+
+- 所有对象都有私有字段[[prototype]]，就是对象的原型
+- 读一个属性，如果对象本身没有，则会继续访问对象的原型，知道原型为空或者找到为止
+
+这个模型在 ES 的各个历史版本中没有很大变化，但是从 ES6 以来，JavaScript 提供了一系列内置函数，以便更直接的访问操纵原型；三个方法分别为：
+
+- Object.create 根据指定的原型创建对象，原型可以是 null
+- Object.getPrototypeOf 获得一个对象的原型
+- Object.setPrototypeOf 设置一个对象的原型
+
+利用这三个方法，完全可以抛开类的思维，利用原型来实现抽象和复用。如下：
+
+``` javascript
+var cat = {
+  say() {
+    console.log('miao ~~')
+  },
+  jump() {
+    console.log('jump')
+  }
+}
+
+var tiger = Object.create(cat, {
+  say: {
+    writable: true,
+    configurable: true,
+    enumerable: true,
+    value: function() {
+      console.log('roar ~~')
+    }
+  }
+})
+
+var anotherCat = Object.create(cat);
+anotherCat.say(); // miao ~~
+
+var anotherTiger = Object.create(tiger);
+anotherTiger.say(); // roar ~~
+```
+
+这里创建了一个 cat 对象，又根据猫做了一些修改创建了 tiger 对象，之后就直接用 Object.create() 来创建另外两个 cat 和 tiger 对象，我们可以用过“原始cat对象”和“原始tiger对象”来控制cat和tiger的行为。  
+但是，在更早的版本中我们只能通过 Java 风格的类接口来操纵原型运行时，由于 new 和 prototype 属性等基础设施今天仍然很多人使用，下面去追溯一下早年的 JavaScript 中的原型和类。
+
+## 早期版本中的类与原型
+
+在早期版本的 JavaScript 中，“类”的定义是一个私有属性[[class]]，语言标准为内置类型诸如 Number、String、Date 等制定了[[class]]属性，以表示它们的类。语言使用者唯一可以访问[[class]]属性的方式时 Object.prototype.toString。  
+下面展示了所有具有内置class属性的对象：
+
+``` javascript
+var o = new Object;
+var n = new Number;
+var s = new String;
+var b = new Boolean;
+var d = new Date;
+var arg = function() {return arguments}();
+var r = new RegExp;
+var f = new Function;
+var arr = new Array;
+var e = new Error;
+console.log([o,n,s,b,d,arg,r,f,arr,e].map(v => Object.prototype.toString.call(v)));
+```
+
+因此，在 ES3 和之前的版本， JavaScript 中类的概念相当弱，它仅仅是运行时的一个字符串属性。  
+
+而我们把 new 理解成 JavaScript 面向对象的一部分，它究竟做了哪些具体的操作呢？
+
+- 以构造器的 prototype 属性（注意与私有字段[[prototype]]的区分）为原型，创建新对象
+- 将 this 和调用参数传给构造器执行
+- 如果构造器返回的是对象，则返回，否则返回第一步创建的对象
+
+new 这样的行为，试图让函数对象在语法上跟类变得相似；但是，它在客观上提供了两种方式：
+
+1. 在构造器中添加属性
+2. 在构造器的 prototype 属性上添加属性
+
+如下:
+
+``` javascript
+function c1() {
+  this.p1 = 1;
+  this.p2 = function() {
+    console.log(this.p1)
+  }
+}
+var o1 = new c1();
+o1.p2();
+
+function c2() {}
+c2.prototype.p1 = 1;
+c2.prototype.p2 = function() {
+  console.log(this.p1);
+}
+var o2 = new c2();
+o2.p2();
+```
+
+方法一是直接在构造器中修改 this，给 this 添加属性  
+方法二是在构造器的 prototype 属性指向的对象上做修改，它是从这个构造器构造出来的所有对象的原型
+
+## ES6 中的类
+
+前面是通过 new 和构造器进行搭配创建新实例，而在 ES6 中加入了新特性 class 关键字，从此，基于类的编程方式成为了 JavaScript 的官方编程范式，如下：
+
+``` javascript
+class Rectangle {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+
+  // getter
+  get area() {
+    return this.calcArea();
+  }
+
+  // method
+  calcArea() {
+    return this.height * this.width;
+  }
+}
+```
+
+在现有的类语法中，getter/setter 和 method 是兼容性最好的，这里类的写法实际上也是有原型运行时来承载的，逻辑上 JavaScript 认为每个类是有共同原型的一组对象，类中定义的方法和属性则会被卸载原型对象之上。此外，最终的是类提供了继承的能力，代码如下：
+
+``` javascript
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+
+  speak() {
+    console.log(this.name + 'make a noise.');
+  }
+}
+
+class Dog extends Animal {
+  constructor(name) {
+    super(name);
+    // call the super class constructor and pass in the name parameter
+  }
+
+  speak() {
+    console.log(this.name + 'barks.');
+  }
+}
+
+let d = new Dog('mitt');
+d.speak();
+// mitt barks
+```
+
+这里通过 extends 关键字让 Dog 继承了 Animal 类，比用 new 和 prototype 原型链来实现继承更加方便。  
+所以，在你的工作中，是不是将 ES6 语法已经提上日程或者正在使用呢？
