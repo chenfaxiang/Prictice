@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>从观察者模式学习数据双向绑定原理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="https://cli.vuejs.org/favicon.png">
+    <script src="./js/observer.js"></script>
+    <script src="./js/dep.js"></script>
+    <script src="./js/watcher.js"></script>
+    <script src="./js/compile.js"></script>
+    <script src="./js/mvvm.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        width: 1000px;
+        height: 100vh;
+        margin: 0 auto;
+        padding: 30px 0;
+        background: rgba(0, 0, 0, .1);
+        font-size: 14px;
+        color: #333;
+        line-height: 20px;
+      }
+      .container-desc,
+      .container-main {
+        text-align: center;
+      }
+      .container-main .input {
+        width: 200px;
+        height: 26px;
+        outline: none;
+      }
+      .container-main .text {
+        display: inline-block;
+        color: #f00;
+        margin-left: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="container">
+      <p class="container-desc">这里是从观察者模式学习数据双向绑定原理</p>
+      <div class="container-main">
+        <input class="input" type="text" v-model="testDemo">
+        <span class="text">实时响应输入框的数据：<strong>{{testDemo}}</strong></span>
+      </div>
+    </div>
+
+    <script>
+      var vm = new MVVM({
+        el: 'app',
+        data() {
+          return {
+            testDemo: '测试双向绑定数据'
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
