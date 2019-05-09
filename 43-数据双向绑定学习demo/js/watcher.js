@@ -1,4 +1,4 @@
-console.log('-- watcher.js');
+console.log('--: watcher.js');
 
 let uId = 0;
 class Watcher {
