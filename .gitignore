@@ -1,6 +1,10 @@
+
+.idea/
 .DS_Store
 node_modules/
 dist/
 npm-debug.log
-.idea/
 package-lock.json
+yarn.lock
+yarn-error.log
+
