@@ -13,7 +13,17 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js' // [] 是一个占位符，保证多入口的不同文件名
   },
+  /**
+   * 用来指定当前环境的构建环境，有三个值：production、development、none
+   * 设置 mode 可以使用 webpack 内置的函数，默认值就是 production
+   * development   -> 设置 process.env.NODE_ENV === 'development'，开启 NamedChunksPlugin 和 NameModulesPlugin，在代码热更新（HMR）阶段可以打印出当前的模块是哪个文件等信息。
+   * production    -> 设置 process.env.NODE_ENV === 'production'，开启 FLagDependencyUsagePlugin，FlagIncludedChunksPlugin，ModuleConcatenationPlugin，NoEmitOnErrorsPlugin，OccurrenceOrderPlugin，SideEffectsFlagPlugin和TerserPlugin。
+   * none          -> 不开启任何优化选项
+   */
   mode: 'production',
+  /**
+   * 加载 loader
+   */
   module: {
     /*
      * rules数组中存放不同的loader
