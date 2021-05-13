@@ -1,4 +1,5 @@
 const path = require('path')
+const { webpack } = require('webpack')
 
 module.exports = {
   /**
@@ -60,7 +61,8 @@ module.exports = {
   /**
    * 插件用于 bundle 文件的优化、资源管理和环境变量注入，作用于整个构建过程
    * 常见的 plugin 及其作用：
-   * CommonsChunkPlugin       -> 将 chunks 相同的模块代码提取成公共的js
+   * CommonsChunkPlugin       -> 将 chunks 相同的模块代码提取成公共的js（webpack3.*时存在的plugin）
+   * SplitChunksPlugin        -> 进行公共脚本分离（webpack4.*的时候出来），官方建议使用该插件替换掉 CommonsChunkPlugin
    * CleaWebpackPlugin        -> 清理构建目录
    * ExtractTextWebpackPlugin -> 将 css 从 bundle 文件里提取成一个单独的 css 文件
    * CopyWebpackPlugin        -> 将文件或者文件夹拷贝到构建的输出目录
@@ -72,6 +74,12 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.html'
-    })
+    }),
+    /**
+     * webpack4.* mode 为 production 时默认开启且必须是 es6 语法，cjs 不支持
+     * webpack3.* 时需要用以下的方法处理:
+     * 增加 scope hoisting插件，将所有模块的代码按照引用顺序存放在一个作用域内，减少函数声明和内存开销
+     */
+    new webpack.optimize.ModuleConcatenationPlugin()
   ]
 }
