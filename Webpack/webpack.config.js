@@ -1,8 +1,12 @@
 const path = require('path')
 
 module.exports = {
-  // 单文件入口时 entry: './src/index.js',只能是一个字符串
-  // 多文件入口时 entry 是一个对象，可以写多个入口文件
+  /**
+   * 单文件入口时 entry: './src/index.js',只能是一个字符串
+   * 多文件入口时 entry 是一个对象，可以写多个入口文件
+   * 多入口文件时可以依赖 glob npm包将入口文件进行规则处理，glob 会返回一个文件路径数组
+   * entry: glob.sync(path.join(__dirname,'./src/~/index.js'))
+   */
   entry: {
     index: './src/index.js',
     search: './src/search.js'
@@ -21,6 +25,11 @@ module.exports = {
    * none          -> 不开启任何优化选项
    */
   mode: 'production',
+  /**
+   * 使用 devtool 时，mode 一般不为 production
+   * eval/source-map/inline-source-map/cheap-source-map
+   */
+  devtool: 'eval',
   /**
    * 加载 loader
    */
@@ -43,7 +52,7 @@ module.exports = {
      * less-loader   -> 将 less 语法转换成 css
      * ts-loader     -> 将 ts 转换成 js
      * file-loader   -> 进行图片、字体等的打包
-     * raw-loader    -> 将文件以字符串的形式导入
+     * raw-loader    -> 将文件以字符串的形式导入，如首页的 meta 信息抽成一个 html 文档后，可以通过该插件直接内联导入
      * thread-loader -> 多进行打包 js 和 css
      * ...
      */
