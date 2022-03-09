@@ -1,7 +1,7 @@
-import { AxiosRequestConfig, AxiosResponse, AxiosPromise } from './types'
-import { HEADERS_CONFIG, API_REQUEST_CODE } from './config'
-import { parseHeaders } from './helpers/headers'
-import { createError } from './helpers/error'
+import { AxiosRequestConfig, AxiosResponse, AxiosPromise } from '../types'
+import { HEADERS_CONFIG, API_REQUEST_CODE } from '../config'
+import { parseHeaders } from '../helpers/headers'
+import { createError } from '../helpers/error'
 
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
@@ -17,7 +17,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       request.timeout = timeout
     }
 
-    request.open(method.toUpperCase(), url, true)
+    request.open(method.toUpperCase(), url!, true)
 
     // open 之后可以设置 headers
     // 设置 headers 的值时，所有的属性在结尾都不应该有 ; 这种字符，它不合法，会导致返回的数据不正确

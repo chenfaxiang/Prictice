@@ -34,4 +34,17 @@ function isPlainObject(val: any): val is Object {
   return toString.call(val) === '[object Object]'
 }
 
-export { isDate, isObject, isPlainObject }
+/**
+ * 将 from 的所有属性合并到 to 中，包括原型上的属性
+ * @param to 待合入的数据
+ * @param from 待被合入的数据
+ * @returns
+ */
+function extend<T, U>(to: T, from: U): T & U {
+  for (const key in from) {
+    ;(to as T & U)[key] = from[key] as any
+  }
+  return to as T & U
+}
+
+export { isDate, isObject, isPlainObject, extend }
