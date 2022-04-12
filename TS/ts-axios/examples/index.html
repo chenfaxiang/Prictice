@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>typescript-axios examples</title>
+    <link rel="stylesheet" href="/index.css">
+
+    <!-- flex css -->
+    <style>
+      /* .flex-box {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: stretch;
+        align-content: stretch;
+        width: 200px;
+        height: 200px;
+        font-size: 16px;
+        color: #fff;
+        background-color: aqua;
+      }
+      .flex-item {
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        line-height: 50px;
+        margin: 10px;
+        background-color: #f66;
+        flex: auto;
+      }
+      .flex-item-1 {
+        order: 1;
+        flex-grow: 2;
+        flex-shrink: 1;
+        flex-basis: 500px;
+      }
+      .flex-item-2 {
+        order: 2;
+        flex-grow: 0;
+        flex-shrink: 1;
+      }
+      .flex-item-3 {
+        order: 3;
+        flex-grow: 4;
+        flex-shrink: 1;
+      }
+      .flex-item-4 {
+        order: 4;
+        flex-grow: 4;
+        flex-shrink: 1;
+        align-self: flex-end;
+      }
+      .flex-item-5 {
+        order: 5;
+        flex-grow: 4;
+        flex-shrink: 1;
+      }
+      .flex-item:first-child {
+        width: 100px;
+        height: 100px;
+        font-size: 40px;
+      }
+      .flex-item-4 {
+        width: 80px;
+        height: 80px;
+        font-size: 30px;
+      } */
+
+      /* grid box 属性 */
+      .grid-box {
+        display: grid;
+        /* grid-template-rows: 80px 80px;
+        grid-template-columns: 100px 100px 100px 100px; */
+        grid-template-rows: repeat(3, 100px);
+        grid-template-columns: repeat(3, 100px);
+        grid-template-areas: "a a a"
+        "b b b"
+        "c c c";
+        /* grid-template-columns: 100px 1fr 2fr;
+        grid-template-rows: repeat(3, 100px); */
+        /* grid-template-columns: 10% 90%; */
+        /* grid-template-columns: repeat(12, 1fr); */
+
+        /* width: 400px; */
+        /* height: 300px; */
+        font-size: 16px;
+        color: #fff;
+        background-color: aqua;
+      }
+      .grid-item {
+        /* width: 50px;
+        height: 50px;
+        text-align: center;
+        line-height: 50px; */
+        margin: 10px;
+        background-color: #f66;
+      }
+
+      .sizing-box {
+        width: 200px;
+        padding: 10px;
+        background-color: aquamarine;
+      }
+      .box-sizing-item {
+        width: 50px;
+        height: 50px;
+        color: #fff;
+        margin: 10px;
+        padding: 10px;
+        background-color: black;
+      }
+      .box-sizing-item-1 {
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body style="padding: 0 20px">
+    <h1>typescript-axios examples</h1>
+    <ul>
+      <li><a href="simple">Simple</a></li>
+      <li><a href="base">Base</a></li>
+      <li><a href="error">Error</a></li>
+      <li><a href="extend">Extend</a></li>
+      <li><a href="interceptor">Interceptor</a></li>
+      <!-- <li><a href="config">Config</a></li>
+      <li><a href="cancel">Cancel</a></li>
+      <li><a href="more">More</a></li> -->
+    </ul>
+
+    <!-- 验证 flex 的各个值 -->
+    <!-- <div class="flex-box">
+      <div class="flex-item flex-item-1">flex 1</div>
+      <div class="flex-item flex-item-2">flex 2</div>
+      <div class="flex-item flex-item-3">flex 3</div>
+      <div class="flex-item flex-item-4">flex 4</div>
+      <div class="flex-item flex-item-5">flex 5</div>
+    </div> -->
+
+    <!-- 验证 grid 的各个值 -->
+    <div class="grid-box">
+      <div class="grid-item grid-item-1">flex 1</div>
+      <div class="grid-item grid-item-2">flex 2</div>
+      <div class="grid-item grid-item-3">flex 3</div>
+      <div class="grid-item grid-item-4">flex 4</div>
+      <div class="grid-item grid-item-5">flex 5</div>
+      <div class="grid-item grid-item-6">flex 6</div>
+      <div class="grid-item grid-item-7">flex 7</div>
+      <div class="grid-item grid-item-8">flex 8</div>
+      <div class="grid-item grid-item-9">flex 9</div>
+    </div>
+
+    <div class="sizing-box">
+      <div class="box-sizing-item box-sizing-item-1">111</div>
+      <div class="box-sizing-item">222</div>
+    </div>
+    
+    <!-- 在一个 DOM 上同时绑定两个点击事件：一个用捕获，一个用冒泡。事件会执行几次？先执行冒泡还是捕获？ -->
+    <div id="btn">点击
+      <div id="btn2" style="margin: 100px;">
+        点击2
+        <div>lalalaal</div>
+      </div>
+    </div>
+    <script>
+      const btn = document.getElementById('btn')
+      const btn2 = document.getElementById('btn2')
+      const bodyDom = document.body;
+      if (btn && btn2 && bodyDom) {
+        btn.addEventListener('click', (e) => { console.log('aa', e.currentTarget, e.target) });
+        btn.addEventListener('click', (e) => { console.log('bb', e.currentTarget, e.target) }, true);
+        
+        btn2.addEventListener('click', (e) => { console.log('cc', e.currentTarget, e.target) });
+        btn2.addEventListener('click', (e) => { console.log('dd', e.currentTarget, e.target) }, true);
+
+        bodyDom.addEventListener('click', (e) => { console.log('ee', e.currentTarget, e.target) });
+        bodyDom.addEventListener('click', (e) => { console.log('ff', e.currentTarget, e.target) }, true);
+      }
+    </script>
+  </body>
+</html>
