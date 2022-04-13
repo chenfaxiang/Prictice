@@ -20,7 +20,18 @@
  */
 
 /**
+ * 时间复杂度分析
+ * 
+ * 总共有 n 个元素，每次查找的区间大小就是n, n/2, n/4, ..., n/2^k（接下来操作元素的剩余个数），
+ * 其中 k 就是循环的次数，由于 n/2^k 取整后 >= 1，即令 n/2^k = 1；
+ * n/2^k = 1 => n = 2^k => k = log2n(log 以2为底，n 的对数)，因此时间复杂度为 logn
+ */
+
+/**
  * 1. [x, y] 左闭右闭区间
+ * 
+ * 时间复杂度：O(logn)
+ * 空间复杂度：O(1)
  */
 function binarySearch(nums, target) {
   if (!nums || nums.length === 0 || (target !== 0 && !target)) {
@@ -56,6 +67,9 @@ console.log(binarySearch(nums, target));
 
 /**
  * 2. [x, y) 左闭右开区间
+ *
+ * 时间复杂度：O(logn)
+ * 空间复杂度：O(1)
  */
 function binarySearch2(nums, target) {
   if (!nums || nums.length === 0 || (target !== 0 && !target)) {
