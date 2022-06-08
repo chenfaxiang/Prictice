@@ -1,8 +1,9 @@
-## 问题汇总
+# 问题汇总
 
+## JavaScript
 1. type 和 interface 的区别是什么？
-> type 是定义类型别名的关键字，通常用于定义联合类型、交叉类型、原始类型等；
-> interface 可以合并，比如定义多个同名接口它们会合并到一个，而 type 不可以；
+> - type 是定义类型别名的关键字，通常用于定义联合类型、交叉类型、原始类型等；
+> - interface 可以合并，比如定义多个同名接口它们会合并到一个，而 type 不可以；
 > 因此，通常我们描述对象的单个数据结构可以用 interface，如果描述的对象又多种数据结构的可能，我们可以定义多个接口用联合类型，然后用 type 给这个联合类型定义一个别名
 ```javascript
 // for example
@@ -160,52 +161,73 @@ console.log(Object.entries(obj));
 ```
 
 3. 在一个 DOM 上同时绑定两个点击事件：一个用捕获，一个用冒泡。事件会执行几次？先执行冒泡还是捕获？
-> 冒泡是从下向上，一个 dom 元素绑定的事件被触发时，此时该元素为目标元素，目标元素执行后，它的祖先元素绑定的事件会依次向上执行
-> 捕获是从上向下，目标元素被触发后，会从目标元素的最顶层祖先元素往下执行到目标元素位置
-> **addEvnetListner** 方法可以传入第三个参数，true 表示捕获，false 则表示冒泡（默认值）
-> 问题1：绑定了几个事件就会执行几次，则同时绑定两个事件则执行两次
-> 问题2：W3C 标准说明，先发生捕获事件，再发生冒泡事件；则执行顺序是 其它元素捕获事件 -> 本元素绑定的事件 -> 其它元素冒泡事件，在执行捕获和冒泡的阶段，两者事件互不干扰，即捕获阶段只有绑定的捕获事件触发，冒泡阶段只有绑定的冒泡事件触发
+> - 冒泡是从下向上，一个 dom 元素绑定的事件被触发时，此时该元素为目标元素，目标元素执行后，它的祖先元素绑定的事件会依次向上执行
+> - 捕获是从上向下，目标元素被触发后，会从目标元素的最顶层祖先元素往下执行到目标元素位置
+> - **addEvnetListner** 方法可以传入第三个参数，true 表示捕获，false 则表示冒泡（默认值）
+> - 问题1：绑定了几个事件就会执行几次，则同时绑定两个事件则执行两次
+> - 问题2：W3C 标准说明，先发生捕获事件，再发生冒泡事件；则执行顺序是 其它元素捕获事件 -> 本元素绑定的事件 -> 其它元素冒泡事件，在执行捕获和冒泡的阶段，两者事件互不干扰，即捕获阶段只有绑定的捕获事件触发，冒泡阶段只有绑定的冒泡事件触发
 
-4. src 和 href 的区别？
-> 两者的作用都是用于 **引入外部资源**，但是使用各有不同
-> 1. **src** 属性使用的标签有：script、img、input、iframe
-> - script 标签上的 src 属性用于引入外部 js 资源
-> - img 标签上的 src 属性用于引入外部 图片 资源
-> - input 标签上的 src 属性和 type="image" 一起使用，用于引入外部图片资源
-> - iframe 标签上的 src 属性用于引入外部图片，如 `<iframe src='gril.fig'></iframe>`
+4. `new` 操作符的实现原理
+> `new` 操作符在对构造函数进行实例化时，通过执行构造函数或者 js 内置构造函数生成一个实例对象
+> 其大致分为以下 4 步：
+> - 创建一个空对象
+> - 将构造函数的 `prototype` 赋值给新创建的空对象 `__proto__`
+> - 通过 `apply` 将构造函数的 `this` 指向新创建的对象并执行
+> - 判断构造函数执行后的返回结果，如果是值类型则返回当前新创建的对象，如果是引用类型则返回当前结果值
 
-> 2. **href** 属性使用的标签有：link、a
-> - link 标签上的 href 属性用于引入外部 图片、stylesheet、icon 等资源
-> - a 标签上的 href 属性用于加载一个超链接，用于跳转
+```javascript
+// 通过 demo 看以上步骤
+function Person(name) {
+  this.name = name;
+}
+const p = new Person('xiaozhang');
+console.log(p); // { name: 'xiaozhang' }
+console.log(p.__proto__ === Person.prototype) // true
+// new 操作符执行构造函数后，返回了一个内部创建的新对象，包含着属性信息，并且以这个新对象为上下文执行了 Person 函数
+// 同时将对象 p 的原型属性指向构造函数的原型，这样实例就能访问到构造函数原型中的方法和属性了
 
-> **注意**：link 标签的 **rel** 属性常有：stylesheet(加载css资源)、icon(加载图标)、preload(预加载css等资源)、apple-touch-icon(ios设备上用于添加到主屏的图标) 等
+function Person1(name) {
+  this.name = name;
+  return { age: 18 }
+}
+const p1 = new Person1('wangwu');
+console.log(p1); // { age: 18 }
+console.log(p1.__proto__ === Person1.prototype); // false，p1是一个新对象，其原型指向 Object
+console.log(p1.__proto__ === Object.prototype); // true
+// 构造函数存在返回值的情况，如果构造函数最后返回了一个对象，就会直接将其返回，而不是返回内部创建的新对象
+// 只要构造函数返回的类型为引用类型object、function就会直接返回该结果，其它基本类型则会返回内部创建的新对象
+```
 
-4. 常用的 meta 标签？
-> meta 标签由 name 和 content 属性定义，用来描述网页文档的属性，除了 HTTP 标准规定的一些 name 外，还可以自定义 name；
-> 常用的 meta 标签有：
-> - `<meta charset="utf-8" />` 描述网页文档的编码类型
-> - `<meta name="keywords" content="网页关键字" />`
-> - `<meta name="description" content="网页描述内容" />`
-> - `<meta http-equiv="refresh" content="0;url=" />`
-> - `<meta name="robots" content="index,follow" />`
->   - 搜索引擎索引方式，其中 content 参数有以下几种：
->     - all，文件将被检索，且页面上的链接可以被查询
->     - none，文件将不被检索，且页面上的链接不可以被查询
->     - index，文件将被检索
->     - fllow，页面上的链接可以被查询
->     - noindex，文件将被不检索
->     - nofllow，页面上的链接不可以被查询
-> - `<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover" />`
->   - 当 name="viewport" 时，content 内容有以下几种：
->   - width: viewport 的宽度，可以是 with=数值/device-width
->   - height: viewport 的高度，可以是 height=数值/device-height
->   - initial-scale: 初始缩放比例
->   - maximum-scale: 最大缩放比例
->   - minimum-scale: 最小缩放比例
->   - user-scalable: 是否允许用户缩放
->   - viewport-fit: iPhone X 及之后的带刘海的屏幕适配属性，[其值有](https://juejin.cn/post/6963941148163473445)
->     - auto：默认值。这个值不影响初始布局视窗，整个 Web 页面是可视的，与Contain表现一致
->     - contain：最初的布局视窗和视觉布局视窗被设置为最大的矩形
->     - cover：初始布局视窗和视觉布局视窗被设置为设备物理屏幕的限定矩形
+```javascript
+// 自己实现一个 new 操作
+function myNew() {
+  // 首先，将构造函数和参数信息进行初始化处理
+  const args = Array.prototype.slice.call(arguments, 1);
+  const ctr = Array.prototype.shift.call(arguments);
+  if (typeof ctr !== 'function') {
+    console.error('类型错误');
+    return;
+  }
+
+  // 1. 创建新的空对象，并将 构造函数的 prototype 赋值给空对象的 __proto__
+  const obj = {};
+  obj.__proto__ = ctr.prototype;
+  // 以上两步操作可以简单处理如下
+  // const obj = Object.create(ctr.prototype);
+
+  // 2. 执行构造函数并将 this 指向新创建的对象，目的是给新创建的对象增加属性
+  const result = ctr.apply(obj, args);
+
+  // 3. 判断结果类型并返回
+  if ((result !== null && typeof result === 'object') || typeof result === 'function') {
+    return result;
+  }
+  return obj;
+}
+
+// 使用
+myNew(构造函数, 参数信息)
+```
 
 5. TODO
+
