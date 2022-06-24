@@ -26,31 +26,31 @@
  * const fn = compose(fn1, fn2, fn3)
  * fn(1)
  */
-// function compose(...fns) {
-//   // compose 没有函数时，返回一个函数，接收传入的参数并返回结果即可
-//   if(!fns) return (v) => v;
-//   // compose 执行只有一个参数时，返回当前参数数据，供后续执行即可
-//   if(fns.length === 1) return fns[0];
+function compose(...fns) {
+  // compose 没有函数时，返回一个函数，接收传入的参数并返回结果即可
+  if(!fns) return (v) => v;
+  // compose 执行只有一个参数时，返回当前参数数据，供后续执行即可
+  if(fns.length === 1) return fns[0];
 
-//   // 其他情况则需要返回一个函数，利用 reduce 进行函数的组合操作
-//   return (param) => {
-//     // accumulator 是累加器的初始值
-//     // currentVal 是当前执行 reduce 操作的数组值，即某一个 function
-//     // 因此，currentVal(accumulator) 相当于 函数执行并传入前一个函数的返回作为参数
-//     return fns.reduce((accumulator, currentVal) => currentVal(accumulator), param);
-//   }
-// }
-// function fn1(num) {
-//   return num + 1;
-// }
-// function fn2(num) {
-//   return num + 2;
-// }
-// function fn3(num) {
-//   return num + 3;
-// }
-// const fn = compose(fn1, fn2, fn3)
-// console.log(fn(1)); // 1 + 1 + 2 + 3 = 7
+  // 其他情况则需要返回一个函数，利用 reduce 进行函数的组合操作
+  return (param) => {
+    // accumulator 是累加器的初始值
+    // currentVal 是当前执行 reduce 操作的数组值，即某一个 function
+    // 因此，currentVal(accumulator) 相当于 函数执行并传入前一个函数的返回作为参数
+    return fns.reduce((accumulator, currentVal) => currentVal(accumulator), param);
+  }
+}
+function fn1(num) {
+  return num + 1;
+}
+function fn2(num) {
+  return num + 2;
+}
+function fn3(num) {
+  return num + 3;
+}
+const fn = compose(fn1, fn2, fn3)
+console.log(fn(1)); // 1 + 1 + 2 + 3 = 7
 
 
 /**
@@ -73,15 +73,15 @@ function compose1(...fns) {
     return rest.reduce((accumulator, currentVal) => currentVal(accumulator), initialVal);
   }
 }
-function fn1(num1, num2, num3) {
+function fn4(num1, num2, num3) {
   return num1 + num2 + num3 + 1;
 }
-function fn2(num) {
+function fn5(num) {
   return num + 2;
 }
-function fn3(num) {
+function fn6(num) {
   return num + 3;
 }
-const fn = compose1(fn1, fn2, fn3)
-console.log(fn(1, 2, 3)); // 输出 1 + 2 + 3 + 1 + 2 + 3 = 12
+const fn7 = compose1(fn4, fn5, fn6)
+console.log(fn7(1, 2, 3)); // 输出 1 + 2 + 3 + 1 + 2 + 3 = 12
 
